@@ -1,0 +1,31 @@
+{
+  "name": "@includekit/prisma-mapper",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@includekit/core": "workspace:*",
+    "@includekit/orchestrator": "workspace:*"
+  },
+  "peerDependencies": {
+    "@prisma/client": ">=5.9.0 <7.0.0"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.9.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0"
+  }
+}

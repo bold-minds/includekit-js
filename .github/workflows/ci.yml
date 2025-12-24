@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+        prisma-version: ['5.9.0', '5.latest', '6.0.0', '6.latest']
+        exclude:
+          # Node 22 requires Prisma v6+
+          - node-version: 22.x
+            prisma-version: '5.9.0'
+          - node-version: 22.x
+            prisma-version: '5.latest'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Prisma ${{ matrix.prisma-version }}
+        run: |
+          if [ "${{ matrix.prisma-version }}" = "5.latest" ]; then
+            pnpm add -D @prisma/client@5 prisma@5
+          elif [ "${{ matrix.prisma-version }}" = "6.latest" ]; then
+            pnpm add -D @prisma/client@6 prisma@6
+          else
+            pnpm add -D @prisma/client@${{ matrix.prisma-version }} prisma@${{ matrix.prisma-version }}
+          fi
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+
+      - name: Run tests
+        run: pnpm test
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test -- --coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+          flags: unittests

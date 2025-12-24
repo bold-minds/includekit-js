@@ -1,0 +1,22 @@
+{
+  "name": "@includekit/example-prisma",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:seed": "tsx src/seed.ts"
+  },
+  "dependencies": {
+    "@includekit/prisma": "workspace:*",
+    "@prisma/client": "^5.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "prisma": "^5.9.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

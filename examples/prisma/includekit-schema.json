@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "name": "User",
+      "id": {
+        "kind": "string"
+      },
+      "relations": [
+        {
+          "name": "posts",
+          "model": "Post",
+          "cardinality": "one-to-many"
+        }
+      ]
+    },
+    {
+      "name": "Post",
+      "id": {
+        "kind": "string"
+      },
+      "relations": [
+        {
+          "name": "author",
+          "model": "User",
+          "cardinality": "many-to-one",
+          "foreignKey": "authorId"
+        },
+        {
+          "name": "tags",
+          "model": "Tag",
+          "cardinality": "many-to-many"
+        }
+      ]
+    },
+    {
+      "name": "Tag",
+      "id": {
+        "kind": "string"
+      },
+      "relations": [
+        {
+          "name": "posts",
+          "model": "Post",
+          "cardinality": "many-to-many"
+        }
+      ]
+    }
+  ]
+}
